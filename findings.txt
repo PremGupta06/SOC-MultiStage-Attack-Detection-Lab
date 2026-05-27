@@ -1,0 +1,154 @@
+SOC MULTI-STAGE ATTACK DETECTION LAB - FINDINGS
+
+==================================================
+1. RECONNAISSANCE ACTIVITY DETECTED
+==================================================
+
+Nmap scans were performed from the Kali Linux attacker machine against the Ubuntu victim machine.
+
+Observed Behavior:
+- Multiple TCP SYN packets detected
+- Port scanning activity observed
+- SSH service discovered on port 22
+
+Evidence:
+- Wireshark packet captures
+- Nmap scan results
+
+Conclusion:
+Reconnaissance activity was successfully detected using packet analysis in Wireshark.
+
+
+==================================================
+2. SYN SCAN ANALYSIS
+==================================================
+
+A stealth SYN scan was executed using:
+sudo nmap -sS TARGET_IP
+
+Observed Behavior:
+- Large number of SYN packets generated rapidly
+- Multiple destination ports targeted
+- TCP handshake attempts observed
+
+Wireshark Filter Used:
+tcp.flags.syn == 1
+
+Conclusion:
+The SYN scan demonstrated how attackers enumerate open ports while minimizing full TCP connections.
+
+
+==================================================
+3. SSH BRUTE-FORCE ATTACK DETECTED
+==================================================
+
+Hydra was used to perform SSH authentication attempts against the Ubuntu victim machine.
+
+Command Used:
+hydra -l victim -P passwords.txt ssh://TARGET_IP
+
+Observed Behavior:
+- Multiple failed login attempts
+- Repeated SSH authentication requests
+- Suspicious login pattern detected
+
+Evidence:
+- auth.log entries
+- SSH traffic in Wireshark
+- Hydra terminal output
+
+Conclusion:
+The repeated authentication failures indicated brute-force attack behavior.
+
+
+==================================================
+4. AUTHENTICATION LOG ANALYSIS
+==================================================
+
+Ubuntu authentication logs were analyzed using:
+
+sudo grep "Failed password" /var/log/auth.log
+
+Observed Log Entry:
+Failed password for victim from ATTACKER_IP
+
+Log Breakdown:
+- Failed password:
+  Authentication attempt unsuccessful
+
+- victim:
+  Targeted username
+
+- ATTACKER_IP:
+  Source IP address of attacker system
+
+- ssh2:
+  SSH protocol version
+
+Conclusion:
+Authentication logs successfully recorded attack activity generated during the Hydra brute-force simulation.
+
+
+==================================================
+5. WIRESHARK TRAFFIC INVESTIGATION
+==================================================
+
+Wireshark was used to monitor:
+- SYN packets
+- SSH traffic
+- TCP connections
+
+Filters Used:
+tcp.flags.syn == 1
+tcp.port == 22
+ip.addr == TARGET_IP
+
+Observed Behavior:
+- Reconnaissance traffic
+- SSH authentication attempts
+- Multiple TCP sessions
+
+Conclusion:
+Wireshark successfully captured and visualized malicious network behavior during the attack simulation.
+
+
+==================================================
+6. SPLUNK LOG ANALYSIS
+==================================================
+
+Ubuntu authentication logs were manually imported into Splunk Enterprise for SIEM investigation.
+
+Splunk Searches Used:
+index=*
+"Failed password"
+ssh
+
+Observed Behavior:
+- Failed login attempts indexed successfully
+- SSH-related events searchable
+- Authentication logs correlated with attack activity
+
+Conclusion:
+Splunk successfully centralized and analyzed Linux authentication logs for SOC investigation purposes.
+
+
+==================================================
+7. OVERALL CONCLUSION
+==================================================
+
+This lab successfully simulated a multi-stage attack workflow involving:
+- Reconnaissance scanning
+- SYN stealth scanning
+- SSH brute-force attacks
+- Network traffic monitoring
+- Authentication log analysis
+- SIEM investigation
+
+Skills Demonstrated:
+- Network traffic analysis
+- Wireshark investigation
+- Linux log analysis
+- Splunk SIEM monitoring
+- SOC investigation workflow
+- Brute-force attack detection
+- Reconnaissance detection
